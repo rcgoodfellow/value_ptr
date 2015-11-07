@@ -6,8 +6,10 @@
 
 namespace std
 {
+  /*
   template<class...>
   using void_t = void;
+  */
 
   template<class, class = void_t<>>
   struct is_clonable : false_type { };
