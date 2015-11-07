@@ -71,7 +71,7 @@ void test_food()
 
 int main()
 {
-  //test_int();
+  test_int();
   test_food();
 }
 
