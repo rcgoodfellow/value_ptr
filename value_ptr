@@ -63,6 +63,12 @@ namespace std
 
     T* get() { return data.get(); }
 
+    template<class TT>
+    TT& as()
+    {
+      return *dynamic_cast<TT*>(data.get());
+    }
+
     private:
       unique_ptr<T> data;
   };
