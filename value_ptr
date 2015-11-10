@@ -17,18 +17,27 @@ namespace std
   template<class T>
   struct is_clonable<T, void_t<decltype(declval<T&>().clone())>> : true_type { };
 
+  /*
   template<class T> inline
   typename enable_if<is_clonable<T>::value, T*>::type
   clone(T && x)
   {
     return x.clone(); 
   }
+  */
   
   template<class T> inline
   typename enable_if<is_clonable<T>::value, T*>::type
   clone(T & x)
   {
     return x.clone(); 
+  }
+  
+  template<class T> inline
+  typename enable_if<is_clonable<T>::value, T*>::type
+  clone(T * x)
+  {
+    return x->clone(); 
   }
 
   template<class T> inline
@@ -40,15 +49,22 @@ namespace std
     return xp;
   }
 
+  //struct __value_ptr {};
+
   template<class T>
-  struct value_ptr
+  struct value_ptr //: public __value_ptr
   {
     T& operator *() { return *data; }
     T* operator ->() { return data.get(); }
 
     value_ptr() : data{new T} { }
-    value_ptr(T && x) : data{clone(move(x))} { } 
-    value_ptr(const value_ptr &x) { *this = x; }
+    value_ptr(T *x) : data{clone(x)} {}
+    //value_ptr(T && x) : data{clone(move(x))} { } 
+    value_ptr(const value_ptr &x) 
+    { 
+      data.reset(clone(*x.data.get()));
+      //*this = x; 
+    }
 
     value_ptr & operator=(const value_ptr &x)
     {
