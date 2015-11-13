@@ -2,6 +2,7 @@
 #define ESTD_VALUE_PTR
 
 #include <type_traits>
+#include <stdexcept>
 #include <memory>
 
 namespace std
@@ -80,9 +81,11 @@ namespace std
     T* get() { return data.get(); }
 
     template<class TT>
-    TT& as()
+    value_ptr<TT> as()
     {
-      return *dynamic_cast<TT*>(data.get());
+      TT* p = dynamic_cast<TT*>(data.get());
+      if(!p) throw std::bad_cast{};
+      return value_ptr<TT>{p};
     }
 
     private:
