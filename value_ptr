@@ -57,6 +57,7 @@ namespace std
   {
     T& operator *() { return *data; }
     T* operator ->() { return data.get(); }
+    const T* operator ->() const { return data.get(); }
 
     value_ptr() : data{new T} { }
     value_ptr(T *x) : data{clone(x)} {}
@@ -73,15 +74,21 @@ namespace std
       return *this;
     }
 
-    bool operator==(const value_ptr &x)
+    bool operator==(const value_ptr &x) const
     {
-      return *data == *x;
+      return *data == *x.get();
+    }
+    
+    bool operator!=(const value_ptr &x) const
+    {
+      return *data != *x.get();
     }
 
     T* get() { return data.get(); }
+    const T* get() const { return data.get(); }
 
     template<class TT>
-    value_ptr<TT> as()
+    value_ptr<TT> as() const
     {
       TT* p = dynamic_cast<TT*>(data.get());
       if(!p) throw std::bad_cast{};
