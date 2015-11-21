@@ -29,4 +29,5 @@
 
 *.swo
 *.swp
-test
+test/values
+
