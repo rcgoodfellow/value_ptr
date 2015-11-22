@@ -7,57 +7,6 @@
 
 namespace std
 {
-  /*
-
-  this is already included in libc++
-
-  template<class...>
-  using void_t = void;
-
-  */
-
-  template<typename T>
-  class clonable;
-
-  template<class, class = void_t<>>
-  struct is_clonable : false_type { };
-
-  template<class T>
-  struct is_clonable<T, void_t<decltype(declval<T>().clone())>> : true_type { };
-
-  template<class T> inline
-  typename enable_if<is_clonable<T&&>::value, T>::type
-  clone(T && x)
-  {
-    cout << __PRETTY_FUNCTION__ << endl;
-    return move(x.clone()); 
-  }
-  
-  template<class T> inline
-  typename enable_if<is_clonable<const T&>::value, T>::type
-  clone(const T & x)
-  {
-    cout << __PRETTY_FUNCTION__ << endl;
-    return x.clone(); 
-  }
-  
-  template<class T> inline
-  typename enable_if<is_clonable<T*>::value, T*>::type
-  clone(const T * x)
-  {
-    cout << __PRETTY_FUNCTION__ << endl;
-    return x->clone(); 
-  }
-
-  template<class T> inline
-  typename enable_if<is_fundamental<T>::value, T>::type
-  clone(const T & x)
-  {
-    cout << __PRETTY_FUNCTION__ << endl;
-    T c = x;
-    return x;
-  }
-
   template<class T>
   struct value_ptr
   {
@@ -67,32 +16,25 @@ namespace std
     { 
       cout << __PRETTY_FUNCTION__ << endl;
     }
-   
-    /*
-    explicit value_ptr(T x) : data{new T{x.clone()}}
-    { 
-      cout << __PRETTY_FUNCTION__ << endl;
-    }
 
-    explicit value_ptr(const T & x) : data{new T{x.clone()}}
+    value_ptr(T* x) : data{x}
     {
       cout << __PRETTY_FUNCTION__ << endl;
     }
-    */
-
-    explicit value_ptr(value_ptr &&x) : data{move(data)}
+   
+    value_ptr(value_ptr &&x) : data{move(data)}
     {
       cout << __PRETTY_FUNCTION__ << endl;
     }
     
-    explicit value_ptr(const value_ptr &x) : data{move(x->clone())}
+    value_ptr(const value_ptr &x) : data{move(unique_ptr<T>(x->clone()))}
     { 
       cout << __PRETTY_FUNCTION__ << endl;
     }
 
     value_ptr & operator=(const value_ptr &x)
     {
-      data = move(x->clone());
+      data = move(unique_ptr<T>(x->clone()));
       return *this;
       //return (*this = move(x->clone()));
     }
@@ -136,12 +78,11 @@ namespace std
   template<typename T>
   struct clonable
   {
-    unique_ptr<T> clone() const & 
+    T* clone() const & 
     { 
       cout << __PRETTY_FUNCTION__ << endl;
-      return unique_ptr<T>{new T{*static_cast<const T*>(this)}};
+      return new T{*static_cast<const T*>(this)};
     }
-
   };
 
 }
