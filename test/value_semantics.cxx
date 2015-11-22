@@ -178,6 +178,7 @@ TEST_CASE("polymorphics", "[values]")
   {
     value_ptr<Base> bb = new B{},
                     cc = new C{};
+
     mf(move(bb));
     mf(move(cc));
   }

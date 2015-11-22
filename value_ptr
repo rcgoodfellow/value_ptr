@@ -5,11 +5,16 @@
 #include <stdexcept>
 #include <memory>
 
+#include <iostream>
+
 namespace std
 {
   template<class T>
   struct value_ptr
   {
+    using std::cout;
+    using std::endl;
+
     template <typename... Args>
     explicit value_ptr(Args ...args)
     : data{new T{args...}}
