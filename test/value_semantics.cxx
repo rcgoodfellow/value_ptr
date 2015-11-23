@@ -185,3 +185,14 @@ TEST_CASE("polymorphics", "[values]")
 
   cout << endl;
 }
+
+TEST_CASE("polykids", "[values]")
+{
+  cout << GREEN << "Polykids" << RESET << endl;
+  
+  value_ptr<Base> b = value_ptr<Base>::from_child<B>();
+  
+  cout << b->id() << endl
+       << endl;
+}
+

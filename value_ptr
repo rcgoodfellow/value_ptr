@@ -19,12 +19,19 @@ namespace std
       std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
 
+    template<typename TT, typename... Args>
+    static value_ptr from_child(Args ...args)
+    {
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      return move(value_ptr{unique_ptr<T>{new TT{args...}}});
+    }
+
     value_ptr(T* x) : data{x}
     {
       std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
    
-    value_ptr(value_ptr &&x) : data{move(data)}
+    value_ptr(value_ptr &&x) : data{move(x.data)}
     {
       std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
@@ -36,9 +43,9 @@ namespace std
 
     value_ptr & operator=(const value_ptr &x)
     {
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
       data = move(unique_ptr<T>(x->clone()));
       return *this;
-      //return (*this = move(x->clone()));
     }
 
     value_ptr & operator=(value_ptr &&x)
@@ -48,7 +55,7 @@ namespace std
       return *this;
     }
 
-    T& operator *(int) { return *data; }
+    T& operator *() { return *data; }
     T* operator ->() { return data.get(); }
     const T* operator ->() const { return data.get(); }
 
@@ -66,14 +73,22 @@ namespace std
     const T* get() const { return data.get(); }
 
     template<class TT>
-    value_ptr<TT> as() const
+    value_ptr<TT> & as() const
     {
+      /*
       TT* p = dynamic_cast<TT*>(data.get());
       if(!p) throw std::bad_cast{};
       return move(value_ptr<TT>{move(*p)});
+      */
+      return *((value_ptr<TT>*)this);
     }
 
     private:
+      value_ptr(unique_ptr<T> && data) 
+        : data{move(data)} 
+      {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
+      }
       unique_ptr<T> data;
   };
 
