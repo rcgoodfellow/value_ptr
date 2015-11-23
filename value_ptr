@@ -12,29 +12,26 @@ namespace std
   template<class T>
   struct value_ptr
   {
-    using std::cout;
-    using std::endl;
-
     template <typename... Args>
     explicit value_ptr(Args ...args)
     : data{new T{args...}}
     { 
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
 
     value_ptr(T* x) : data{x}
     {
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
    
     value_ptr(value_ptr &&x) : data{move(data)}
     {
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
     
     value_ptr(const value_ptr &x) : data{move(unique_ptr<T>(x->clone()))}
     { 
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
     }
 
     value_ptr & operator=(const value_ptr &x)
@@ -46,7 +43,7 @@ namespace std
 
     value_ptr & operator=(value_ptr &&x)
     {
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
       data = std::move(x.data);
       return *this;
     }
@@ -85,7 +82,7 @@ namespace std
   {
     T* clone() const & 
     { 
-      cout << __PRETTY_FUNCTION__ << endl;
+      std::cout << __PRETTY_FUNCTION__ << std::endl;
       return new T{*static_cast<const T*>(this)};
     }
   };

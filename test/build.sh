@@ -5,4 +5,4 @@ clang++ \
   -std=c++1z \
   -l c++abi \
   -L /usr/local/lib \
-  test.cxx -o test
+  value_semantics.cxx -o values
