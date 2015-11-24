@@ -196,3 +196,37 @@ TEST_CASE("polykids", "[values]")
        << endl;
 }
 
+struct Z
+{
+  virtual string f() { data_->f_impl(); };
+
+  protected:
+    value_ptr<Z> data_;
+
+  private:
+    virtual string f_impl() = 0;
+};
+
+struct X : public Z
+{
+  string data{"i am x"};
+  string f() override { return data; };
+};
+
+struct Y : public Z
+{
+  string data{"i am y"};
+  string f() override { return data; };
+};
+
+TEST_CASE("composition", "[values]")
+{
+  cout << GREEN << "Value Objects" << RESET << endl;
+  
+  value_ptr<Z> x = new X,
+               y = new Y;
+
+  cout << x->f() << endl
+       << y->f() << endl;
+
+}

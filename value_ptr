@@ -54,7 +54,7 @@ namespace std
       DIAG;
     }
     
-    value_ptr(const value_ptr &x) : data{move(unique_ptr<T>(x->clone()))}
+    value_ptr(const value_ptr &x) : data{x->clone()}
     { 
       WDIAG;
     }
@@ -72,6 +72,8 @@ namespace std
       data = std::move(x.data);
       return *this;
     }
+
+    virtual ~value_ptr() = default;
 
     T& operator *() { return *data; }
     T* operator ->() { return data.get(); }
