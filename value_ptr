@@ -7,6 +7,24 @@
 
 #include <iostream>
 
+#define RED     "\x1b[38;5;202m"
+#define BLUE    "\x1b[38;5;33m"
+#define GREEN   "\x1b[38;5;36m"
+#define SUBDUE  "\x1b[38;5;12m"
+#define RESET   "\x1b[0m"
+
+#ifdef DEBUG
+#define DIAG std::cout << __PRETTY_FUNCTION__ << std::endl;
+#else
+#define DIAG do {} while(0)
+#endif
+
+#ifdef DEBUG
+#define WDIAG std::cout << RED << __PRETTY_FUNCTION__ << RED << std::endl;
+#else
+#define WDIAG do {} while(0)
+#endif
+
 namespace std
 {
   template<class T>
@@ -16,41 +34,41 @@ namespace std
     explicit value_ptr(Args ...args)
     : data{new T{args...}}
     { 
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      DIAG;
     }
 
     template<typename TT, typename... Args>
     static value_ptr from_child(Args ...args)
     {
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      DIAG;
       return move(value_ptr{unique_ptr<T>{new TT{args...}}});
     }
 
     value_ptr(T* x) : data{x}
     {
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      DIAG;
     }
    
     value_ptr(value_ptr &&x) : data{move(x.data)}
     {
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      DIAG;
     }
     
     value_ptr(const value_ptr &x) : data{move(unique_ptr<T>(x->clone()))}
     { 
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      WDIAG;
     }
 
     value_ptr & operator=(const value_ptr &x)
     {
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      WDIAG;
       data = move(unique_ptr<T>(x->clone()));
       return *this;
     }
 
     value_ptr & operator=(value_ptr &&x)
     {
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      DIAG;
       data = std::move(x.data);
       return *this;
     }
@@ -87,7 +105,7 @@ namespace std
       value_ptr(unique_ptr<T> && data) 
         : data{move(data)} 
       {
-        std::cout << __PRETTY_FUNCTION__ << std::endl;
+        DIAG;
       }
       unique_ptr<T> data;
   };
@@ -97,7 +115,7 @@ namespace std
   {
     T* clone() const & 
     { 
-      std::cout << __PRETTY_FUNCTION__ << std::endl;
+      WDIAG;
       return new T{*static_cast<const T*>(this)};
     }
   };
