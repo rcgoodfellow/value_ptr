@@ -7,11 +7,13 @@
 
 #include <iostream>
 
+/*
 #define RED     "\x1b[38;5;202m"
 #define BLUE    "\x1b[38;5;33m"
 #define GREEN   "\x1b[38;5;36m"
 #define SUBDUE  "\x1b[38;5;12m"
 #define RESET   "\x1b[0m"
+*/
 
 #ifdef DEBUG
 #define DIAG std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -20,7 +22,7 @@
 #endif
 
 #ifdef DEBUG
-#define WDIAG std::cout << RED << __PRETTY_FUNCTION__ << RED << std::endl;
+#define WDIAG std::cout <<  __PRETTY_FUNCTION__ << std::endl;
 #else
 #define WDIAG do {} while(0)
 #endif
